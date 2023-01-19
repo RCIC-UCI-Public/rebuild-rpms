@@ -1,7 +1,7 @@
 # rebuild-rpms
 
 This repo contains recipes to rebuild RPMS that  are normally provided by the OS
-and have correspons=nding SRPMS and spec files that can be resused with small updates
+and have corresponding SRPMS and spec files that can be resused with needed updates
 and modifications.
 
 ## Individual packages info
