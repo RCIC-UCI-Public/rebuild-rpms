@@ -6,17 +6,17 @@ and modifications.
 
 ## Individual packages info
 
-1. shadow-utils
+### shadow-utils
 
    The original RPM provided by the OS (from baseOS repo) as of version 4.6
-   has a call to `sss_cache` enabled in the most of the binaries such as 
-   useradd, usermod, etc. The call makes execution of such binaries excessively slow
+   enabled a call to `sss_cache` in most of the binaries such as useradd,
+   usermod, etc. This call makes the execution of such binaries excessively slow
    as the SSSD cache is cleared. 
 
-   To remedy, get the SRPM for the same version and reconfigure to disable this call,
-   recompile and rebuild RPM. All needed files are in *shadow-utils/*
+   To remedy, get the SRPM for the same version and reconfigure to disable use of SSSD,
+   recompile and rebuild RPM. All needed files are in *shadow-utils/* of this repo.
    
-   The source RPM was downloaded and added to the repo:
+   The source RPM was downloaded:
 
    ```bash
    wget https://download.rockylinux.org/pub/rocky/8/BaseOS/source/tree/Packages/s/shadow-utils-4.6-17.el8.src.rpm
@@ -25,19 +25,11 @@ and modifications.
    The spec file patch with needed changes was created by:
 
    ```bash
-   diff -Naur shadow-utils.spec.orig shadow-utils.spec > spec.patch
+   diff -Naur shadow-utils.spec.orig shadow-utils.spec > spec-4.6-17.patch
    ```
 
    To build a new RPM using SRPM and spec patch file:
 
-   1. Install the following RPMs if missing, they are required for compiling from source:
-
-      ```bash
-      yum install libsemanage-devel
-      yum install itstool
-      yum install audit-libs-devel
-      yum install libacl-devel
-      ```
 
    1. Download this repo via:
 
@@ -65,7 +57,7 @@ and modifications.
    1. Patch the spec file:
     
       ```bash
-      patch -p0 < ../spec.patch 
+      patch -p0 < ../spec-4.6-17.patch
 
       ```
    1. Build RPMS:
@@ -74,7 +66,18 @@ and modifications.
       rpmbuild --define "_topdir `pwd`" -bb shadow-utils.spec 
       ```
 
-      Resulting RPMS are in `RPMS/x86_64/`
+      In case some prerequisite RPMS are missing on a build host the above command fails
+      with errors specifying which RPMS are needed to be installed.  All required  RPMS
+      are identified in spec file with `BuildRequires:` directives, and can be installed with yum,
+      for example:
+
+      ```bash
+      yum install libsemanage-devel
+      yum install itstool
+      yum install audit-libs-devel
+      yum install libacl-devel
+      ```
+      Rerun rpmobuild command. When successful, the resulting RPMS are in `RPMS/x86_64/`
       Copy RPMS to desired location and delete builddir:
 
       ```bash
