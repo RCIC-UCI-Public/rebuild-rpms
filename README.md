@@ -55,11 +55,18 @@ and modifications.
       ```
 
    1. Patch the spec file:
+
+      In the patch, the changes include:
+
+      * update source of 3 files to use those already available from SRPM
+      * add info to description identifying package rebuild by `RCIC @ UC Irvine`
+        and the reason for rebuild
+      * update configiure command to disable SSSD
     
       ```bash
       patch -p0 < ../spec-4.6-17.patch
-
       ```
+
    1. Build RPMS:
 
       ```bash
