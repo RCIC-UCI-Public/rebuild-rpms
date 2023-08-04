@@ -92,3 +92,44 @@ and modifications.
       rm -rf builddir
       ```
 
+      Resulting RPMS contain exactly the same subset of files as the original RPMs installed with the OS.
+      To create RPMS in alternate locatino see the next step.
+
+   1. Build RPMS for alternative location:
+
+      In order to use an alternate location for the installed files need ot make a few additional
+      changes to spec file.
+
+      Copy `shadow-utils.spec` to a separate file and edit a copy as:
+
+      * change RPM name to differentiate it from the original:
+
+        ```
+        Name: shadow-utils-no-sssd
+        ```
+
+      * in Globals section before any other line define _prefix and _sysconfdir for alternative installation location */opt/rcic*.
+        All shadow-utils files will be configured and installed in respective  subdirectories under */opt/rcic*.
+
+        ```
+        ### Globals ###
+        %define _prefix		/opt/rcic
+        %define _sysconfdir	/opt/rcic/etc
+        ```
+
+      * in %files section (this is specifically for shadow-utils main RPM) add directives to include leading directories.
+        This provides for clean removal of RPM.
+
+        ```
+        %dir %{_sysconfdir}
+        %dir %{_bindir}
+        %dir %{_sbindir}
+        %dir %{_mandir}
+        %dir %{_datadir}
+        ```
+      Save edited file as shadow-utils-alt.spec and build RPM as
+
+      ```bash
+      rpmbuild --define "_topdir `pwd`" -bb ../shadow-utils-alt.spec
+      ```
+
