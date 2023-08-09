@@ -127,6 +127,7 @@ managing user accounts. The groupadd, groupdel, and groupmod commands
 are used for managing group accounts.
 This package is rebuilt from the original released SRPM by RCIC @ UC Irvine
 The binaries in rebuilt package do not have calls to sss_cache.
+Values for UID_MAX and GID_MAX in login.defs are set to 4294967293 (default was 60000)
 
 
 ### Subpackages ###
@@ -239,6 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 %make_install gnulocaledir=$RPM_BUILD_ROOT/%{_datadir}/locale MKINSTALLDIRS=`pwd`/mkinstalldirs
 install -d -m 755 $RPM_BUILD_ROOT/%{_sysconfdir}/default
 install -p -c -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/login.defs
+sed -i "s/60000/4294967293/" $RPM_BUILD_ROOT/%{_sysconfdir}/login.defs
 install -p -c -m 0600 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/default/useradd
 
 
