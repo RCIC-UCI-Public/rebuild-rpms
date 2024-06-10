@@ -1,0 +1,37 @@
+--- shadow-utils.spec.orig	2024-06-07 16:55:09.023722731 -0700
++++ shadow-utils.spec	2024-06-10 10:55:29.754599820 -0700
+@@ -4,12 +4,12 @@
+ Release: 22%{?dist}
+ Epoch: 2
+ URL: http://pkg-shadow.alioth.debian.org/
+-Source0: https://github.com/shadow-maint/shadow/releases/download/v%{version}/shadow-%{version}.tar.xz
+-Source1: https://github.com/shadow-maint/shadow/releases/download/v%{version}/shadow-%{version}.tar.xz.asc
++Source0: shadow-%{version}.tar.xz
++Source1: shadow-%{version}.tar.xz.asc
+ Source2: shadow-utils.useradd
+ Source3: shadow-utils.login.defs
+ Source4: shadow-bsd.txt
+-Source5: https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
++Source5: gpl-2.0.txt
+ 
+ ### Globals ###
+ %global includesubiddir %{_includedir}/shadow 
+@@ -130,6 +130,8 @@
+ for all users. The useradd, userdel, and usermod commands are used for
+ managing user accounts. The groupadd, groupdel, and groupmod commands
+ are used for managing group accounts.
++This package is rebuilt from the original released SRPM by RCIC @ UC Irvine
++The binaries in rebuilt package do not have calls to sss_cache.
+ 
+ 
+ ### Subpackages ###
+@@ -225,7 +227,9 @@
+ %endif
+ 
+ autoreconf
++## RCIC CHANGE - add -with-sssd=no to configure
+ %configure \
++        --with-sssd=no \
+         --enable-shadowgrp \
+         --enable-man \
+         --with-audit \

@@ -19,7 +19,7 @@ and modifications.
    The source RPM was downloaded:
 
    ```bash
-   wget https://download.rockylinux.org/pub/rocky/8/BaseOS/source/tree/Packages/s/shadow-utils-4.6-17.el8.src.rpm
+   wget https://download.rockylinux.org/pub/rocky/8/BaseOS/source/tree/Packages/s/shadow-utils-4.6-22.el8.src.rpm
    ```
 
    The spec file patch with needed changes was created by:
@@ -62,9 +62,12 @@ and modifications.
       * add info to description identifying package rebuild by `RCIC @ UC Irvine`
         and the reason for rebuild
       * update configiure command to disable SSSD
+      * change prefix,mandir,includedir,sysconfdir to /opt/RCIC/shadow-utils/<version>
+      * changes the name of the RPMs from shadow-utils to shadow-utils-no-sssd
+      * add prefix,mandir,includedir,sysconfigdir to %files for cleaner removal
     
       ```bash
-      patch -p0 < ../spec-4.6-17.patch
+      patch -p0 < ../spec-4.6-22.patch
       ```
 
    1. Build RPMS:
@@ -92,44 +95,24 @@ and modifications.
       rm -rf builddir
       ```
 
-      Resulting RPMS contain exactly the same subset of files as the original RPMs installed with the OS.
-      To create RPMS in alternate locatino see the next step.
+      Resulting RPMS contain same subset of files as the original RPM (minus build_id links) installed with the OS.
+      BUT the install tree area has be been changed to /opt/RCIC/shadow-utils
 
-   1. Build RPMS for alternative location:
 
-      In order to use an alternate location for the installed files need ot make a few additional
-      changes to spec file.
+   1. Build RPMS that *REPLACES* the system-supplied version
 
-      Copy `shadow-utils.spec` to a separate file and edit a copy as:
 
-      * change RPM name to differentiate it from the original:
+      Follow the process above, EXCEPT use spec-sys-4.6-22.patch instead of spec-4.6-22.patch.  
+     
+      You will probably have to edit the resulting spec file and bump the release from -22 to something
+      larger than the version supplied with the system -- this is so yum/dnf will pick the later version
+      of the rpm.
 
-        ```
-        Name: shadow-utils-no-sssd
-        ```
+      the "sys" spec file only does the following
 
-      * in Globals section before any other line define _prefix and _sysconfdir for alternative installation location */opt/rcic*.
-        All shadow-utils files will be configured and installed in respective  subdirectories under */opt/rcic*.
+      * update source of 3 files to use those already available from SRPM
+      * add info to description identifying package rebuild by `RCIC @ UC Irvine`
+        and the reason for rebuild
+      * update configiure command to disable SSSD
 
-        ```
-        ### Globals ###
-        %define _prefix		/opt/rcic
-        %define _sysconfdir	/opt/rcic/etc
-        ```
-
-      * in %files section (this is specifically for shadow-utils main RPM) add directives to include leading directories.
-        This provides for clean removal of RPM.
-
-        ```
-        %dir %{_sysconfdir}
-        %dir %{_bindir}
-        %dir %{_sbindir}
-        %dir %{_mandir}
-        %dir %{_datadir}
-        ```
-      Save edited file as shadow-utils-alt.spec and build RPM as
-
-      ```bash
-      rpmbuild --define "_topdir `pwd`" -bb ../shadow-utils-alt.spec
-      ```
-
+   NOTE: if you build this version, the OS-supplied version and this version cannot both be installed. 
