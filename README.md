@@ -123,6 +123,7 @@ wget https://download.rockylinux.org/pub/rocky/8/BaseOS/source/tree/Packages/s/s
    shadow-utils-no-sssd-4.6-22.el8.x86_64.rpm
    shadow-utils-no-sssd-subid-4.6-22.el8.x86_64.rpm 
    shadow-utils-no-sssd-subid-devel-4.6-22.el8.x86_64.rpm
+   ```
 
    Copy RPMs to desired location and delete builddir:
 
@@ -137,17 +138,18 @@ wget https://download.rockylinux.org/pub/rocky/8/BaseOS/source/tree/Packages/s/s
 
 ### Build RPMs that *REPLACES* the system-supplied version
 
-Follow the process above, EXCEPT use spec-sys-4.6-22.patch instead of spec-4.6-22.patch.  
+Follow the process above, EXCEPT use `spec-sys-4.6-22.patch` instead of `spec-4.6-22.patch`.  
      
-You will probably have to edit the resulting spec file and bump the release from -22 to something
+You will probably have to edit the resulting spec file and bump the release from `22` to something
 larger than the version supplied with the system -- this is so yum/dnf will pick the later version
 of the rpm.
 
-the "sys" spec file only does the following
+the "sys" spec file only does the following:
 
 * update source of 3 files to use those already available from SRPM
 * add info to description identifying package rebuild by `RCIC @ UC Irvine`
   and the reason for rebuild
 * update configiure command to disable SSSD
+* will install in the same location as the system provided RPM
 
 **NOTE: if you build this version, the OS-supplied version and this version cannot both be installed**.
