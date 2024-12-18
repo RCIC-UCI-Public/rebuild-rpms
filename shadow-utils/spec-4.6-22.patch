@@ -1,5 +1,5 @@
---- shadow-utils.spec.orig	2024-06-07 16:55:09.023722731 -0700
-+++ shadow-utils.spec	2024-06-10 10:49:49.259298404 -0700
+--- shadow-utils.spec.orig	2024-12-18 13:46:16.793226629 -0800
++++ shadow-utils.spec	2024-12-18 14:26:28.578855150 -0800
 @@ -1,17 +1,26 @@
  Summary: Utilities for managing accounts and shadow password files
 -Name: shadow-utils
@@ -23,7 +23,7 @@
 +## RCIC Changes: prefix,sysconfdir,mandir,includedir redefinition.  turn of build-id debug info
 +%define _prefix /opt/RCIC/shadow-utils/%{version}
 +%define _sysconfdir %{_prefix}/etc
-+%define _mandir %{_prefix}/man
++%define _mandir %{_prefix}/share/man
 +%define _includedir %{_prefix}/include
 +%define _build_id_links none
 +## END RCIC
@@ -50,7 +50,7 @@
          --enable-shadowgrp \
          --enable-man \
          --with-audit \
-@@ -364,6 +377,14 @@
+@@ -364,6 +377,13 @@
  %{_mandir}/man8/lastlog.8*
  %{_mandir}/man8/vipw.8*
  %{_mandir}/man8/vigr.8*
@@ -61,7 +61,6 @@
 +%dir %{_mandir}
 +%dir %{_datadir}
 +## END RCIC
-+
  
  %files subid
  %{_libdir}/libsubid.so.*
